@@ -1,29 +1,12 @@
-# README #
+# Lista de itens para sorteio roleta #
 
-This README would normally document whatever steps are necessary to get your application up and running.
-
-### What is this repository for? ###
-
-* Quick summary
-* Version
-* [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo)
-
-### How do I get set up? ###
-
-* Summary of set up
-* Configuration
-* Dependencies
-* Database configuration
-* How to run tests
-* Deployment instructions
-
-### Contribution guidelines ###
-
-* Writing tests
-* Code review
-* Other guidelines
-
-### Who do I talk to? ###
-
-* Repo owner or admin
-* Other community or team contact
+7 => 303030	30% DE DESCONTO NO BUFFET
+6 => 96492	1 CAFE MOKACCINO DOIS FRADES
+5 => 94146	1 PEDAÇO DE PIZZA
+4 => 95440	1 CAFE COADO
+3 => 245858	REST/CROISSANTS SALGADOS
+2 => 245895	REST/SUCO LARANJA 300ML.
+1 => 94856	TAPIOCA MANTEIGA UN
+10 => 96133	ROT/LANCHE MISTO QUENTE 
+9 => 27007	ESFIHA CARNE UNI
+8 => 245580	EMPADA FRANGO UN
