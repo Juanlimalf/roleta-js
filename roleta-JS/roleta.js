@@ -174,9 +174,9 @@ async function stopRotateWheel() {
 
 // funçao que diminui conforme o valor, para diminuir a velocidade da roleta
 function diminuirLinear(valorAtual, totalIteracao) {
-  var valorInicial = 0.2;
-  var valorFinal = 0.001;
-  var valorIncremento = (valorInicial - valorFinal) / totalIteracao; // 20 é o número de intervalos entre 20 valores
+  let valorInicial = 0.2;
+  let valorFinal = 0.001;
+  let valorIncremento = (valorInicial - valorFinal) / totalIteracao; // 20 é o número de intervalos entre 20 valores
 
   return valorInicial - (valorAtual - 1) * valorIncremento;
 }
