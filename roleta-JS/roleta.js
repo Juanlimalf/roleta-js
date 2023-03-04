@@ -1,8 +1,8 @@
-let colors = ["#F7C210",
+let colors = ["#3E66AE",
+              "#F7C210",
               "#AC1D15",
               "#215B29",
-              "#42215A",
-              "#3E66AE"];
+              "#42215A"];
 
 let produtos = ["30% DESCONTO BUFFET",
                 "1 CAFE MOKACCINO",
@@ -18,9 +18,12 @@ let produtos = ["30% DESCONTO BUFFET",
 
 let arc = Math.PI / (produtos.length/2);
 
-// angulo inicial e final + 5 voltas  roleta
+// angulo inicial
 let startAngle = 0
-let targetAngle = arc*(produtos.length)*2;
+
+// angulo sorteado 
+let targetAngle = (arc*(produtos.length-1))*3;
+
 let spinTimeout = null;
 
 // Desenhar a Roleta
@@ -50,10 +53,12 @@ function draw() {
   ctx = canvas.getContext("2d");
   ctx.clearRect(0,0,(px*2),(py*2));
   ctx.strokeStyle = "silver";
-  ctx.lineWidth = 0;
+  ctx.lineWidth = 1;
   
   // contagem para colorir os seguimentos da roleta
   let count_colors = 0;
+
+  let itemSorteado;
 
   // desenhando seguimentos da roleta
   for(let i = 0; i < produtos.length; i++) {
@@ -61,7 +66,7 @@ function draw() {
     if (count_colors == colors.length) {
       count_colors = 0
     }
-    let angle = startAngle + i * arc;
+    let angle = startAngle - i * arc;
     ctx.fillStyle = colors[count_colors];
     ctx.beginPath();
     ctx.arc(px, py, outsideRadius, angle, angle + arc);
@@ -73,7 +78,7 @@ function draw() {
     const textX = px + Math.cos(angle + arc / 2) * (textRadius)
     const textY = py + Math.sin(angle + arc / 2) * (textRadius)
     ctx.save();
-    ctx.font = 'bold 1.6rem sans-serif';
+    ctx.font = 'bold 1.5rem sans-serif';
     ctx.fillStyle = "white";
     ctx.translate(textX, textY);
     ctx.rotate(angle + arc / 2 + Math.PI);
@@ -118,11 +123,18 @@ function draw() {
 }
 
 
+// Funçao para iniciar o giro da roleta
+async function spin(item) {
 
-function spin(item) {
+  let btn = document.getElementById('btn')
+  // desabilitando o botao girar
+  btn.disabled = true
 
-  let itemSorteado = item
+  // // definindo o item sorteado
+  // itemSorteado = produtos.indexOf(item)
+  itemSorteado = item
   
+  // definindo onde a roleta ira parar
   targetAngle += arc*itemSorteado
 
   // rodar a roleta
@@ -130,37 +142,44 @@ function spin(item) {
 
 }
 
-
-
-function rotateWheel() {
+async function rotateWheel() {
   if(startAngle >= targetAngle) {
     stopRotateWheel();
     return;
   }
 
   // Definição do novo angulo
-  startAngle += 0.1;
-  
+  startAngle += diminuirLinear(startAngle, targetAngle)
+
   // Desenha a roleta com novo angulo
   draw();
 
   // Velocidade da roleta
-  spinTimeout = setTimeout('rotateWheel()', 10);
+  spinTimeout = requestAnimationFrame(rotateWheel);
 }
 
 
-function stopRotateWheel() {
-  clearTimeout(spinTimeout);
-  let degrees = startAngle * 180 / Math.PI + 90;
-  console.log(degrees)
-  let arcd = arc * 180 / Math.PI;
-  let index = Math.floor((360 - degrees % 360) / arcd);
+async function stopRotateWheel() {
+  cancelAnimationFrame(spinTimeout);
 
   // mostrando o produto sorteado
-  alert(`produto: ${produtos[index]}`);
+  alert(`produto: ${produtos[itemSorteado]}`);
+
+  btn.disabled = false
 
   // resetando as variaveis e roleta
   location.reload();
 }
+
+
+// funçao que diminui conforme o valor, para diminuir a velocidade da roleta
+function diminuirLinear(valorAtual, totalIteracao) {
+  var valorInicial = 0.2;
+  var valorFinal = 0.001;
+  var valorIncremento = (valorInicial - valorFinal) / totalIteracao; // 20 é o número de intervalos entre 20 valores
+
+  return valorInicial - (valorAtual - 1) * valorIncremento;
+}
+
 
 draw();
