@@ -15,14 +15,17 @@ let produtos = ["30% DESCONTO BUFFET",
                 "1 ESFIHA TURCA DE CARNE",
                 "1 EMPADA DE FRANGO"];
 
-
+// angulo da roleta em radianos
 let arc = Math.PI / (produtos.length/2);
 
 // angulo inicial
-let startAngle = 0
+let startAngle = 0;
 
-// angulo sorteado 
-let targetAngle = (arc*(produtos.length-1))*3;
+// quantidade de voltas da roleta
+let quantidadeVoltas = 4;
+
+// angulo de parada da roleta
+let targetAngle = (((Math.PI/180)*360)*quantidadeVoltas) - ((Math.PI/180)*108);
 
 let spinTimeout = null;
 
@@ -52,7 +55,7 @@ function draw() {
   // propriedades do canvas
   ctx = canvas.getContext("2d");
   ctx.clearRect(0,0,(px*2),(py*2));
-  ctx.strokeStyle = "silver";
+  ctx.strokeStyle = "#5e5e5e";
   ctx.lineWidth = 1;
   
   // contagem para colorir os seguimentos da roleta
@@ -60,17 +63,18 @@ function draw() {
 
   let itemSorteado;
 
-  // desenhando seguimentos da roleta
+  // desenhando a roleta
   for(let i = 0; i < produtos.length; i++) {
 
+    // seguimentos da roleta
     if (count_colors == colors.length) {
       count_colors = 0
     }
     let angle = startAngle - i * arc;
     ctx.fillStyle = colors[count_colors];
     ctx.beginPath();
-    ctx.arc(px, py, outsideRadius, angle, angle + arc);
-    ctx.arc(px, py, insideRadius, angle + arc, angle);
+    ctx.arc(px, py, outsideRadius, angle, angle + arc, false);
+    ctx.arc(px, py, insideRadius, angle + arc, angle, true);
     ctx.stroke();
     ctx.fill();
 
@@ -87,21 +91,23 @@ function draw() {
     ctx.textBaseline = "middle";
     ctx.fillText(text, 0, 0);
     ctx.restore();
+    ctx.save();
 
+    // desenhando a borda
+    ctx.beginPath();
+    ctx.fillStyle = "#5e5e5e";
+    ctx.arc(px, py, outsideRadius-30, angle, angle + arc, false);
+    ctx.arc(px, py, outsideRadius+10, angle + arc, angle, true);
+    ctx.stroke();
+    ctx.fill();
+    ctx.save();
+    
     count_colors += 1
   }
 
-  // desenhando a borda
-  ctx.beginPath();
-  ctx.arc(px, py, outsideRadius + 10, 0, 2 * Math.PI, true);
-  ctx.arc(px, py, outsideRadius - 5, 0, 2 * Math.PI, false);
-  ctx.fillStyle = "#5e5e5e";
-  ctx.stroke();
-  ctx.fill();
-
   // centro
   ctx.beginPath();
-  ctx.arc(px, py, 25, 0, 2 * Math.PI);
+  ctx.arc(px, py, 30, 0, 2 * Math.PI);
   ctx.fillStyle = "#ffb947";
   ctx.stroke();
   ctx.fill();
@@ -175,7 +181,7 @@ async function stopRotateWheel() {
 // funçao que diminui conforme o valor, para diminuir a velocidade da roleta
 function diminuirLinear(valorAtual, totalIteracao) {
   let valorInicial = 0.2;
-  let valorFinal = 0.001;
+  let valorFinal = 0.0001;
   let valorIncremento = (valorInicial - valorFinal) / totalIteracao; // 20 é o número de intervalos entre 20 valores
 
   return valorInicial - (valorAtual - 1) * valorIncremento;
