@@ -1,6 +1,9 @@
 # Roleta Feita em Javascrip e Canvas
 
 ## Lista de itens para sorteio roleta #
+
+para sortear o produto deve chamar a função "SPIN(<ITEM SORTEADO>)" passando o item que foi sorteado.
+
 - 0 => 303030	30% DE DESCONTO NO BUFFET
 - 1 => 96492	1 CAFE MOKACCINO DOIS FRADES
 - 2 => 94146	1 PEDAÇO DE PIZZA

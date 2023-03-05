@@ -1,3 +1,5 @@
+// VARIAVES GLOBAIS
+
 let colors = ["#3E66AE",
               "#F7C210",
               "#AC1D15",
@@ -27,14 +29,27 @@ let quantidadeVoltas = 4;
 // angulo de parada da roleta
 let targetAngle = (((Math.PI/180)*360)*quantidadeVoltas) - ((Math.PI/180)*108);
 
-let spinTimeout = null;
+let spinTimeout;
+
+let itemSorteado;
+
 
 // Desenhar a Roleta
 function draw() {
 
   let canvas = document.getElementById("wheelcanvas");
 
-  let padding = window.innerWidth * 0.95
+  let padding;
+  let font;
+
+  if (window.innerHeight>window.innerWidth){
+    padding = window.innerWidth * 0.95
+    font = 'bold 1.5rem sans-serif'
+
+  } else{
+    padding = 600
+    font = 'bold 1rem sans-serif'
+  }
 
   canvas.width = padding ;
   canvas.height = padding;
@@ -61,8 +76,6 @@ function draw() {
   // contagem para colorir os seguimentos da roleta
   let count_colors = 0;
 
-  let itemSorteado;
-
   // desenhando a roleta
   for(let i = 0; i < produtos.length; i++) {
 
@@ -82,7 +95,7 @@ function draw() {
     const textX = px + Math.cos(angle + arc / 2) * (textRadius)
     const textY = py + Math.sin(angle + arc / 2) * (textRadius)
     ctx.save();
-    ctx.font = 'bold 1.5rem sans-serif';
+    ctx.font = font;
     ctx.fillStyle = "white";
     ctx.translate(textX, textY);
     ctx.rotate(angle + arc / 2 + Math.PI);
@@ -96,7 +109,7 @@ function draw() {
     // desenhando a borda
     ctx.beginPath();
     ctx.fillStyle = "#5e5e5e";
-    ctx.arc(px, py, outsideRadius-30, angle, angle + arc, false);
+    ctx.arc(px, py, outsideRadius-20, angle, angle + arc, false);
     ctx.arc(px, py, outsideRadius+10, angle + arc, angle, true);
     ctx.stroke();
     ctx.fill();
@@ -132,16 +145,16 @@ function draw() {
 // Funçao para iniciar o giro da roleta
 async function spin(item) {
 
-  let btn = document.getElementById('btn')
+  let btn = document.getElementById('btn');
   // desabilitando o botao girar
-  btn.disabled = true
-
+  btn.disabled = true;
+  
   // // definindo o item sorteado
   // itemSorteado = produtos.indexOf(item)
-  itemSorteado = item
+  itemSorteado = item;
   
   // definindo onde a roleta ira parar
-  targetAngle += arc*itemSorteado
+  targetAngle += arc*itemSorteado;
 
   // rodar a roleta
   rotateWheel();
@@ -171,7 +184,7 @@ async function stopRotateWheel() {
   // mostrando o produto sorteado
   alert(`produto: ${produtos[itemSorteado]}`);
 
-  btn.disabled = false
+  btn.disabled = false;
 
   // resetando as variaveis e roleta
   location.reload();
