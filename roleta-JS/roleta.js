@@ -6,19 +6,12 @@ let colors = ["#3E66AE",
               "#215B29",
               "#42215A"];
 
-let produtos = ["30% DESCONTO BUFFET",
-                "1 CAFE MOKACCINO",
-                "1 PEDAÇO DE PIZZA",
-                "1 CAFE COADO",
-                "1 SALGADO",
-                "1 SUCO DE LARANJA 300ML.",
-                "1 TAPIOCA MANTEIGA",
-                "1 MISTO QUENTE",
-                "1 ESFIHA TURCA DE CARNE",
-                "1 EMPADA DE FRANGO"];
+
+// Produtos da roleta
+let produtos;
 
 // angulo da roleta em radianos
-let arc = Math.PI / (produtos.length/2);
+let arc;
 
 // angulo inicial
 let startAngle = 0;
@@ -33,9 +26,42 @@ let spinTimeout;
 
 let itemSorteado;
 
+async function drawRoulette(){
+  
+  const url = 'http://localhost:8004/produtos';
+  
+  const options = {
+  method: "GET",
+  mode: "cors", 
+  cache:"default"
+  };
+
+  let pro = await fetch(url, options)
+  .then(promisse => promisse.json())
+  .then(response => {
+    produtos = response;
+  });
+
+  draw();
+
+};
+
+// produtos = ["30% DESCONTO BUFFET",
+//                 "1 CAFE MOKACCINO",
+//                 "1 PEDAÇO DE PIZZA",
+//                 "1 CAFE COADO",
+//                 "1 SALGADO",
+//                 "1 SUCO DE LARANJA 300ML.",
+//                 "1 TAPIOCA MANTEIGA",
+//                 "1 MISTO QUENTE",
+//                 "1 ESFIHA TURCA DE CARNE",
+//                 "1 EMPADA DE FRANGO"];
+
 
 // Desenhar a Roleta
 function draw() {
+
+  arc = Math.PI / (produtos.length/2);
 
   let canvas = document.getElementById("wheelcanvas");
 
@@ -53,7 +79,7 @@ function draw() {
 
   canvas.width = padding ;
   canvas.height = padding;
-  
+
   let ctx;
 
   // coordenadas do centro do canvas
@@ -99,7 +125,7 @@ function draw() {
     ctx.fillStyle = "white";
     ctx.translate(textX, textY);
     ctx.rotate(angle + arc / 2 + Math.PI);
-    let text = produtos[i];
+    let text = produtos[i]["descricao_produto"];
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
     ctx.fillText(text, 0, 0);
@@ -110,8 +136,23 @@ function draw() {
     ctx.beginPath();
     ctx.fillStyle = "#5e5e5e";
     ctx.arc(px, py, outsideRadius-20, angle, angle + arc, false);
-    ctx.arc(px, py, outsideRadius+10, angle + arc, angle, true);
+    ctx.arc(px, py, outsideRadius, angle + arc, angle, true);
     ctx.stroke();
+    ctx.fill();
+    ctx.save();
+
+    // Calcula as coordenadas do centro do círculo na extremidade do segmento
+    const circleX = px + (outsideRadius-10) * Math.cos(angle+(arc/3)*0.8);
+    const circleY = py + (outsideRadius-10) * Math.sin(angle+(arc/3)*0.8);
+
+    const circleX1 = px + (outsideRadius-10) * Math.cos(angle+(arc/3)*2.2);
+    const circleY1 = py + (outsideRadius-10) * Math.sin(angle+(arc/3)*2.2);
+
+    // Desenha o círculo na extremidade do segmento
+    ctx.beginPath();
+    ctx.fillStyle = "#FFF";
+    ctx.arc(circleX, circleY, 6, 0, 2 * Math.PI);
+    ctx.arc(circleX1, circleY1, 6, 0, 2 * Math.PI);
     ctx.fill();
     ctx.save();
     
@@ -121,20 +162,20 @@ function draw() {
   // centro
   ctx.beginPath();
   ctx.arc(px, py, 30, 0, 2 * Math.PI);
-  ctx.fillStyle = "#ffb947";
+  ctx.fillStyle = "#cd9a29";
   ctx.stroke();
   ctx.fill();
 
   // seta
   ctx.beginPath();
-  ctx.moveTo(px - 10, (py - 5)-(outsideRadius+5));
-  ctx.lineTo(px + 10, (py - 5)-(outsideRadius+5));
+  ctx.moveTo(px - 10, (py - 5)-(outsideRadius-5));
+  ctx.lineTo(px + 10, (py - 5)-(outsideRadius-5));
 
-  ctx.lineTo(px + 10, (py - 5)-(outsideRadius-15));
-  ctx.lineTo(px + 25, (py - 5)-(outsideRadius-15));
-  ctx.lineTo(px, py-(outsideRadius-30));
-  ctx.lineTo(px - 25, (py - 5)-(outsideRadius-15));
-  ctx.lineTo(px - 10, (py - 5)-(outsideRadius-15));
+  ctx.lineTo(px + 10, (py - 5)-(outsideRadius-20));
+  ctx.lineTo(px + 25, (py - 5)-(outsideRadius-20));
+  ctx.lineTo(px, py-(outsideRadius-35));
+  ctx.lineTo(px - 25, (py - 5)-(outsideRadius-20));
+  ctx.lineTo(px - 10, (py - 5)-(outsideRadius-20));
 
   ctx.lineTo(px - 10, py - (outsideRadius + 15));
   ctx.fillStyle = "red";
@@ -182,7 +223,7 @@ async function stopRotateWheel() {
   cancelAnimationFrame(spinTimeout);
 
   // mostrando o produto sorteado
-  alert(`produto: ${produtos[itemSorteado]}`);
+  alert(`produto: ${produtos[itemSorteado]["descricao_produto"]}, cod: ${produtos[itemSorteado]["cod_acesso"]}`);
 
   btn.disabled = false;
 
@@ -201,4 +242,4 @@ function diminuirLinear(valorAtual, totalIteracao) {
 }
 
 
-draw();
+drawRoulette();
